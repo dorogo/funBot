@@ -10,11 +10,13 @@ from src.db.dbDriver import DbDriver
 
 class MyTestCase(unittest.TestCase):
 
+#   смотрел как мокать базу данных
+
     @patch('src.db.dbDriver.DbDriver.getById')
     # @mock.patch.object(DbDriver, 'getById', mock.MagicMock(return_value='patched'))
     def test_something1(self, mock_obj):
         mock_obj.return_value = '3412424'
-        db = DbDriver()
+        db = DbDriver(True)
         res = db.getById('dasd')
         print(f'res = {res}')
         # self.assertEquals(True, False)
@@ -23,8 +25,8 @@ class MyTestCase(unittest.TestCase):
     @patch('src.db.dbDriver.db.connect')
     # @mock.patch.object(DbDriver, 'getById', mock.MagicMock(return_value='patched'))
     def test_something2(self, mock_db):
-        mock_db.return_value.cursor.return_value.execute.return_value.fetchone.return_value = ('пососи1',)
-        db = DbDriver()
+        mock_db.return_value.cursor.return_value.execute.return_value.fetchone.return_value = ('ololo1',)
+        db = DbDriver(True)
         res = db.getById('фыв')
         print(f'res = {res}')
         # self.assertEqual(True, False)
@@ -35,9 +37,9 @@ class MyTestCase(unittest.TestCase):
     @patch('src.db.dbDriver.db')
     # @mock.patch.object(DbDriver, 'getById', mock.MagicMock(return_value='patched'))
     def test_something3(self, mock_db):
-        # mock_db.connect.return_value.cursor.return_value.execute.return_value.fetchone.return_value = ('пососи',)
-        mock_db.connect().cursor().execute().fetchone.return_value = ('пососи2',)
-        db = DbDriver()
+        # mock_db.connect.return_value.cursor.return_value.execute.return_value.fetchone.return_value = ('ololo',)
+        mock_db.connect().cursor().execute().fetchone.return_value = ('ololo2',)
+        db = DbDriver(True)
         res = db.getById('фыв')
         print(f'res = {res}')
         # self.assertEqual(True, False)

@@ -6,35 +6,13 @@ import pymorphy2
 import re
 from telebot import types
 
-
 if __name__ == '__main__':
-    print("it's started!")
-    morph = pymorphy2.MorphAnalyzer()
 
-    # получаем токен из cfg файла
-    with open('../conf/my.cfg', 'r') as cfg:
-        token = cfg.read()
-
-    print(f'token = {token}')
-
-    try:
-        bot = telebot.TeleBot(token)
-        user = bot.get_me()
-    except telebot.apihelper.ApiTelegramException:
-        print('Cant init bot.')
-        sys.exit()
-
-    print(f'user = {user}')
-
-    print('Connecting to db')
-    db = DbDriver()
-    db.connect()
-
-
-    @bot.message_handler(commands=['start', 'help'])
-    def send_welcome(message):
-        print(message.message_id)
-        bot.reply_to(message, "Trun' pososi")
+    # methods
+    def is_allowed_chat(id):
+        allowed_chats = db.getAllowedChats()
+        print(allowed_chats)
+        return id in allowed_chats
 
 
     def process_word(word):
@@ -56,10 +34,46 @@ if __name__ == '__main__':
                 break
         return result
 
+
+    # execution
+    print("it's started!")
+
+    morph = pymorphy2.MorphAnalyzer()
+
+    # получаем токен из cfg файла
+    with open('../conf/my.cfg', 'r') as cfg:
+        token = cfg.read()
+        if token is None:
+            print("Cant find bot token")
+            sys.exit()
+
+    print(f'token = {token}')
+    try:
+        bot = telebot.TeleBot(token)
+        user = bot.get_me()
+    except telebot.apihelper.ApiTelegramException:
+        print('Cant init bot.')
+        sys.exit()
+
+    print(f'user = {user}')
+
+    print('Connecting to db')
+    db = DbDriver()
+
+
+    @bot.message_handler(commands=['start', 'help'])
+    def send_welcome(message):
+        print(message.message_id)
+        bot.reply_to(message, "Trun' pososi")
+
+
     @bot.message_handler()
     def echo_all(message):
         chat_id = message.chat.id
-        print(message.text)
+        if not is_allowed_chat(chat_id):
+            print(f" Chat id='{chat_id}' is not allowed")
+            return
+        print(f'message.text = >{message.text}< chat_id = {chat_id}')
         source_message = re.sub('[^а-яА-Я ]+', '', message.text)
         print(source_message)
         arr_words = source_message.split(' ')
@@ -74,7 +88,9 @@ if __name__ == '__main__':
         if result is None or len(result) == 0:
             print('Empty result')
             return
-        print(f'res = >{result}<')
-        bot.send_message(chat_id, result)
+        print(f'res = >{result}< ')
+        # bot.send_message(chat_id, result)
+        bot.reply_to(message, result)
+
 
     bot.polling()
