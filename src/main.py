@@ -61,8 +61,14 @@ if __name__ == '__main__':
         print(message.message_id)
         bot.reply_to(message, "Trun' pososi")
 
+    @bot.message_handler(commands=['getChatId', 'getchatid'])
+    def send_chat_id(message):
+        chat_id = message.chat.id
+        if chat_id > 0:
+            bot.reply_to(message, chat_id)
+
     @bot.message_handler(commands=['refreshCache','refreshcache'])
-    def send_welcome(message):
+    def refresh_cache(message):
         chat_id = message.chat.id
         if not Utils.is_admin(chat_id):
             print(f" Chat id='{chat_id}' is not admin")
