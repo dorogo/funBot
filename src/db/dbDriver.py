@@ -6,7 +6,6 @@ import traceback
 class DbDriver:
 
     DB_PATH = None
-    allowedChats = None
 
     def __init__(self, is_mock=False):
         self.DB_PATH = "../databases/funBot.db"
@@ -43,14 +42,12 @@ class DbDriver:
             conn.close()
 
     def getAllowedChats(self):
-        if self.allowedChats is not None:
-            return self.allowedChats
         try:
             conn = db.connect(self.DB_PATH)
             cursor = conn.cursor()
             cursor = cursor.execute("select * from chats")
-            self.allowedChats = [item[0] for item in cursor.fetchall()]
-            return self.allowedChats
+            allowed_chats = [item[0] for item in cursor.fetchall()]
+            return allowed_chats
         except db.Error:
             print(f"Can't execute query for id = {id}")
             traceback.print_exc()

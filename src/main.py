@@ -4,16 +4,11 @@ import sys
 from db.dbDriver import DbDriver
 import pymorphy2
 import re
+from utils.utils import Utils
 from telebot import types
 
+
 if __name__ == '__main__':
-
-    # methods
-    def is_allowed_chat(id):
-        allowed_chats = db.getAllowedChats()
-        print(allowed_chats)
-        return id in allowed_chats
-
 
     def process_word(word):
         # попробуем найти исходное слово в бд
@@ -27,7 +22,7 @@ if __name__ == '__main__':
         except Exception:
             traceback.print_exc()
             return None
-
+        # print(f"morphed_words: {morphed_words}")
         for q in morphed_words:
             result = db.getById(q.normal_form)
             if result is not None:
@@ -66,11 +61,21 @@ if __name__ == '__main__':
         print(message.message_id)
         bot.reply_to(message, "Trun' pososi")
 
+    @bot.message_handler(commands=['refreshCache'])
+    def send_welcome(message):
+        chat_id = message.chat.id
+        if not Utils.is_admin(chat_id):
+            print(f" Chat id='{chat_id}' is not admin")
+            return
+        if Utils.refresh_chat_allowed():
+            print("Refreshed allowed chats")
+            bot.reply_to(message, "Refreshed allowed chats")
+
 
     @bot.message_handler()
     def echo_all(message):
         chat_id = message.chat.id
-        if not is_allowed_chat(chat_id):
+        if not Utils.is_chat_allowed(chat_id):
             print(f" Chat id='{chat_id}' is not allowed")
             return
         print(f'message.text = >{message.text}< chat_id = {chat_id}')
