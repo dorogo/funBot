@@ -76,11 +76,11 @@ class DbDriver:
             cursor = conn.cursor()
             cursor.execute("delete from chats where id = ?", (remove_chat_id,))
             conn.commit()
-            return True
+            return cursor.rowcount
         except db.Error:
             print(f"Can't delete chat_id = {remove_chat_id} from allowed")
             traceback.print_exc()
-            return False
+            return -1
         finally:
             conn.close()
         pass

@@ -103,11 +103,15 @@ if __name__ == '__main__':
             bot.reply_to(message, "Error. Command '/removeAllowedChat chat_id'")
             return
         chat_id_for_remove = arr[1]
-        if db.remove_chat_to_allowed(chat_id_for_remove):
-            bot.reply_to(message, f"Success. Chat {chat_id_for_remove} removed from allowed")
+
+        remove_result = db.remove_chat_to_allowed(chat_id_for_remove)
+        result_msg = f"Chat {chat_id_for_remove} not found in allowed"
+        if remove_result > 0:
+            result_msg = f"Success. Chat {chat_id_for_remove} removed from allowed"
             Utils.refresh_chat_allowed()
-        else:
-            bot.reply_to(message, f"Error while removing chat {chat_id_for_remove} from allowed")
+        elif remove_result == -1:
+            result_msg = f"Error while removing chat {chat_id_for_remove} from allowed"
+        bot.reply_to(message, result_msg)
 
     @bot.message_handler(commands=['refreshCache'])
     def refresh_cache(message):
