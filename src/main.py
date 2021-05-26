@@ -67,7 +67,38 @@ if __name__ == '__main__':
         if chat_id > 0:
             bot.reply_to(message, chat_id)
 
-    @bot.message_handler(commands=['refreshCache','refreshcache'])
+    @bot.message_handler(commands=['addAllowedChat', 'add_allowed_chat', 'addallowedchat'])
+    def add_allowed_chat(message):
+        chat_id = message.chat.id
+        if not Utils.is_admin(chat_id):
+            return
+        arr = message.text.split(' ')
+        if len(arr) != 2:
+            bot.reply_to(message, "Error. Command '/addAllowedChat chat_id'")
+        new_chat_id = arr[1]
+        if db.add_chat_to_allowed(new_chat_id):
+            bot.reply_to(message, f"Success. Chat {new_chat_id} added to allowed")
+            Utils.refresh_chat_allowed()
+        else:
+            bot.reply_to(message, f"Error while adding chat {new_chat_id} to allowed")
+
+
+    @bot.message_handler(commands=['removeAllowedChat', 'remove_allowed_chat', 'removeallowedchat'])
+    def add_allowed_chat(message):
+        chat_id = message.chat.id
+        if not Utils.is_admin(chat_id):
+            return
+        arr = message.text.split(' ')
+        if len(arr) != 2:
+            bot.reply_to(message, "Error. Command '/removeAllowedChat chat_id'")
+        chat_id_for_remove = arr[1]
+        if db.remove_chat_to_allowed(chat_id_for_remove):
+            bot.reply_to(message, f"Success. Chat {chat_id_for_remove} removed from allowed")
+            Utils.refresh_chat_allowed()
+        else:
+            bot.reply_to(message, f"Error while removing chat {chat_id_for_remove} from allowed")
+
+    @bot.message_handler(commands=['refreshCache', 'refreshcache'])
     def refresh_cache(message):
         chat_id = message.chat.id
         if not Utils.is_admin(chat_id):

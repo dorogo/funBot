@@ -53,3 +53,34 @@ class DbDriver:
             traceback.print_exc()
         finally:
             conn.close()
+
+    def add_chat_to_allowed(self, new_chat_id):
+        arr_args = [new_chat_id]
+        try:
+            conn = db.connect(self.DB_PATH)
+            cursor = conn.cursor()
+            cursor.execute("insert into chats (id) values (?)", arr_args)
+            conn.commit()
+            return True
+        except db.Error:
+            print(f"Can't add new_chat_id = {new_chat_id}")
+            traceback.print_exc()
+            return False
+        finally:
+            conn.close()
+        pass
+
+    def remove_chat_to_allowed(self, remove_chat_id):
+        try:
+            conn = db.connect(self.DB_PATH)
+            cursor = conn.cursor()
+            cursor.execute("delete from chats where id = ?", (remove_chat_id,))
+            conn.commit()
+            return True
+        except db.Error:
+            print(f"Can't delete chat_id = {remove_chat_id} from allowed")
+            traceback.print_exc()
+            return False
+        finally:
+            conn.close()
+        pass
