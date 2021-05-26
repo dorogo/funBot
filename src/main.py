@@ -61,7 +61,7 @@ if __name__ == '__main__':
         print(message.message_id)
         bot.reply_to(message, "Trun' pososi")
 
-    @bot.message_handler(commands=['refreshCache'])
+    @bot.message_handler(commands=['refreshCache','refreshcache'])
     def send_welcome(message):
         chat_id = message.chat.id
         if not Utils.is_admin(chat_id):

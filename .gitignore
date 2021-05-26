@@ -123,5 +123,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-/databases/
+/databases/funBot.db
+/databases/DB Browser for SQLite
 /conf/my.cfg
