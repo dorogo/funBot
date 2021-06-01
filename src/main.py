@@ -123,12 +123,12 @@ if __name__ == '__main__':
         command = message.text
         index_separate = command.find(' ')
         if index_separate is None or index_separate < 1:
-            bot.reply_to(message, f"Error. Command '/addMappingRow [key:value]/'")
+            bot.reply_to(message, f"Error. Command '/addMappingRow [key:value]'")
             return False
         command = command[index_separate+1:]
         arr = command.split(":")
         if len(arr) != 2:
-            bot.reply_to(message, f"Error. Need '{mapping_separator}' separator. Command '/addMappingRow [key{mapping_separator}value]/'")
+            bot.reply_to(message, f"Error. Command '/addMappingRow [key:value]'")
             return False
         key = arr[0].lower()
         if key is None or len(key) < 1 or key.find(' ') != -1:
