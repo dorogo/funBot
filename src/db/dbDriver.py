@@ -84,3 +84,21 @@ class DbDriver:
         finally:
             conn.close()
         pass
+
+    def add_row_to_mapping(self, key, value):
+        if key is None or value is None:
+            return
+        arr_args = [key, value]
+        try:
+            conn = db.connect(self.DB_PATH)
+            cursor = conn.cursor()
+            cursor.execute("insert into mapping (id, result) values (?,?)", arr_args)
+            conn.commit()
+            return True
+        except db.Error:
+            print(f"Error. Can't add pair '{key}':'{value}' to mapping")
+            traceback.print_exc()
+            return False
+        finally:
+            conn.close()
+        pass
