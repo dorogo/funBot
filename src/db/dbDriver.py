@@ -102,3 +102,18 @@ class DbDriver:
         finally:
             conn.close()
         pass
+
+    def remove_row_from_mapping(self, remove_phrase_id):
+        try:
+            conn = db.connect(self.DB_PATH)
+            cursor = conn.cursor()
+            cursor.execute("delete from mapping where id = ?", (remove_phrase_id,))
+            conn.commit()
+            return cursor.rowcount
+        except db.Error:
+            print(f"Can't delete phrase_id = {remove_phrase_id} from mapping")
+            traceback.print_exc()
+            return -1
+        finally:
+            conn.close()
+        pass

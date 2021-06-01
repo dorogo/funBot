@@ -145,8 +145,23 @@ if __name__ == '__main__':
             return False
         return True
 
-
-
+    @bot.message_handler(commands=['deleteMappingRow'])
+    def delete_row_from_mapping(message):
+        chat_id = message.chat.id
+        if not Utils.is_admin(chat_id):
+            return
+        arr = message.text.split(' ')
+        if len(arr) != 2:
+            bot.reply_to(message, "Error. Command '/deleteMappingRow phrase_id'")
+            return
+        phrase_id_for_remove = arr[1]
+        remove_result = db.remove_row_from_mapping(phrase_id_for_remove)
+        result_msg = f"Phrase_id '{phrase_id_for_remove}' not found in mapping"
+        if remove_result > 0:
+            result_msg = f"Success. Phrase_id '{phrase_id_for_remove}' removed from mapping"
+        elif remove_result == -1:
+            result_msg = f"Error while removing phrase_id '{phrase_id_for_remove}' from mapping"
+        bot.reply_to(message, result_msg)
 
 
     @bot.message_handler(commands=['refreshCache'])
