@@ -13,7 +13,8 @@ commands = ['/help - команды',
             '/removeAllowedChat [chat_id] - удалить чат из разрешенных',
             '/addMappingRow [key:value] - добавить в базу соответствие',
             '/deleteMappingRow phrase_id - удалить из базы соответствие',
-            '/refreshCache - очистка кэша']
+            '/refreshCache - очистка кэша'
+            '/turnOff - выкл бота']
 
 
 class Bot:
@@ -141,6 +142,15 @@ class Bot:
             if Utils.refresh_chat_allowed():
                 print("Refreshed allowed chats")
                 self.bot.reply_to(message, "Refreshed allowed chats")
+
+        @self.bot.message_handler(commands=['turnOff'])
+        def turn_off(message):
+            chat_id = message.chat.id
+            if not Utils.is_admin(chat_id):
+                print(f" Chat id='{chat_id}' is not admin")
+                return
+            self.bot.stop_polling()
+            sys.exit()
 
         morph = pymorphy2.MorphAnalyzer()
 
