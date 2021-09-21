@@ -13,7 +13,7 @@ commands = ['/help - команды',
             '/removeAllowedChat [chat_id] - удалить чат из разрешенных',
             '/addMappingRow [key:value] - добавить в базу соответствие',
             '/deleteMappingRow phrase_id - удалить из базы соответствие',
-            '/refreshCache - очистка кэша'
+            '/refreshCache - очистка кэша',
             '/turnOff - выкл бота']
 
 
