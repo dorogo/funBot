@@ -15,6 +15,7 @@ commands = ['/help - команды',
             '/deleteMappingRow phrase_id - удалить из базы соответствие',
             '/refreshCache - очистка кэша',
             '/turnOff - выкл бота']
+const_sticker_id_starts_with = 'CAACAgI'
 
 
 class Bot:
@@ -181,7 +182,10 @@ class Bot:
                 return
             print(f'res = >{result}< ')
             # self.bot.send_message(chat_id, result)
-            self.bot.reply_to(message, result)
+            if result.startswith(const_sticker_id_starts_with):
+                self.bot.send_sticker(chat_id, result, message.message_id)
+            else:
+                self.bot.reply_to(message, result)
 
         @self.bot.message_handler(content_types=['sticker'])
         def echo_sticker(message):
@@ -191,7 +195,6 @@ class Bot:
                 return
             sticker_id = message.sticker.file_id
             self.bot.reply_to(message, sticker_id)
-
 
     def start(self):
         self.bot.polling()
