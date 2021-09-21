@@ -166,6 +166,7 @@ class Bot:
             print(f'message.text = >{message.text}< chat_id = {chat_id}')
             source_message = re.sub('[^а-яА-Я ]+', '', message.text)
             print(source_message)
+            source_message = re.sub('[^а-яА-Яa-zA-z ]+', '', message.text)
             arr_words = source_message.split(' ')
             result = None
             for w in arr_words:
@@ -181,6 +182,16 @@ class Bot:
             print(f'res = >{result}< ')
             # self.bot.send_message(chat_id, result)
             self.bot.reply_to(message, result)
+
+        @self.bot.message_handler(content_types=['sticker'])
+        def echo_sticker(message):
+            chat_id = message.chat.id
+            if not Utils.is_admin(chat_id):
+                print(f" Chat id='{chat_id}' is not admin")
+                return
+            sticker_id = message.sticker.file_id
+            self.bot.reply_to(message, sticker_id)
+
 
     def start(self):
         self.bot.polling()
