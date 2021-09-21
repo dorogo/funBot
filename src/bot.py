@@ -46,8 +46,10 @@ class Bot:
         @self.bot.message_handler(commands=['getChatId'])
         def send_chat_id(message):
             chat_id = message.chat.id
-            if chat_id > 0:
-                self.bot.reply_to(message, chat_id)
+            user_id = message.from_user.id
+            if not Utils.is_admin(user_id):
+                return
+            self.bot.reply_to(message, chat_id)
 
         @self.bot.message_handler(commands=['addAllowedChat'])
         def add_allowed_chat(message):
