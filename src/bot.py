@@ -1,11 +1,13 @@
+import logging
 import telebot
 import sys
 import re
 import traceback
 import pymorphy2
-from utils.utils import Utils
-from src.db.dbDriver import DbDriver
+import telebot.apihelper
 
+from src.utils.utils import Utils
+from src.db.dbDriver import DbDriver
 
 commands = ['/help - команды',
             '/getChatId - узнать id чата',
@@ -19,11 +21,29 @@ const_sticker_id_starts_with = 'CAACAgI'
 
 
 class Bot:
-
+    logger = logging.getLogger('funbot')
+    logger.addHandler(logging.StreamHandler(sys.stdout))
+    logger.setLevel(logging.DEBUG)
+    logger.disabled = True
     # user = None
     bot = None
 
     def init(self, token):
+        # //check for debug
+        # print(f'sys.gettrace() = {sys.gettrace()}')
+        # # gettrace = getattr(sys, 'gettrace', None)
+        # #
+        # # if gettrace is None:
+        # #     print('No sys.gettrace')
+        # # elif gettrace():
+        # #     print('Hmm, Big Debugger is watching me')
+        # # else:
+        # #     print("Let's do something interesting")
+        # #     print(1 / 0)
+        #
+        # logging.warning('dasdasd')
+        # logging.info('123')
+        # self.logger.info('test')
         try:
             self.bot = telebot.TeleBot(token)
             # self.user = self.bot.get_me()
@@ -41,7 +61,7 @@ class Bot:
                 return
             result = "Commands:"
             for row in commands:
-                result += "\n"+row
+                result += "\n" + row
             self.bot.reply_to(message, result)
 
         @self.bot.message_handler(commands=['getChatId'])
@@ -98,7 +118,7 @@ class Bot:
             if index_separate is None or index_separate < 1:
                 self.bot.reply_to(message, f"Error. Command '/addMappingRow [key:value]'")
                 return False
-            command = command[index_separate+1:]
+            command = command[index_separate + 1:]
             arr = command.split(":")
             if len(arr) != 2:
                 self.bot.reply_to(message, f"Error. Command '/addMappingRow [key:value]'")
@@ -164,10 +184,10 @@ class Bot:
             if not Utils.is_chat_allowed(chat_id):
                 print(f" Chat id='{chat_id}' is not allowed")
                 return
+            print(message)
             print(f'message.text = >{message.text}< chat_id = {chat_id}')
-            source_message = re.sub('[^а-яА-Я ]+', '', message.text)
-            print(source_message)
             source_message = re.sub('[^а-яА-Яa-zA-z ]+', '', message.text)
+            print(f'source_message = {source_message}')
             arr_words = source_message.split(' ')
             result = None
             for w in arr_words:
